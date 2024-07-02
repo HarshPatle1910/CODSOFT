@@ -1,6 +1,7 @@
 package Task01;
 
 import java.util.Scanner;
+import java.util.InputMismatchException;
 import java.util.Random;
 
 public class Task1 {
@@ -23,28 +24,34 @@ public class Task1 {
         do {
         	 //Generated Random Number
             generated_number = rand.nextInt(max_range - min_range + 1) + min_range;
-            System.out.println("\nYour generated number : "+generated_number);
+            //System.out.println("\nYour generated number : "+generated_number);
             
         	while(!win) {
             	System.out.println("\n\nThis is your "+ ++attempt + " attempt: ");
-                //Getting user input to guess for the generated number
-                System.out.print("\nEnter a number to guess for the generated number: ");
-                guessed_number = scan_obj.nextInt();
-                //System.out.println(guessed_number);
-        		
-                if (guessed_number<generated_number) {
-                	System.out.println("Guessed number " + guessed_number + " is too low.");
-                }
-                else if (guessed_number>generated_number) {
-                	System.out.println("Guessed number " + guessed_number + " is too high.");
-                } 
-                else {
-                	System.out.println("Guessed number " + guessed_number + " is correct.");
-                	System.out.println("Congratulations! You win the game.");
-                	win = true;
-                }
+                
+            	try {
+            		//Getting user input to guess for the generated number
+                    System.out.print("Enter a number to guess for the generated number: ");
+                    guessed_number = scan_obj.nextInt();
+                    //System.out.println(guessed_number);
+            		
+                    if (guessed_number<generated_number) {
+                    	System.out.println("Guessed number " + guessed_number + " is too low.");
+                    }
+                    else if (guessed_number>generated_number) {
+                    	System.out.println("Guessed number " + guessed_number + " is too high.");
+                    } 
+                    else {
+                    	System.out.println("Guessed number " + guessed_number + " is correct.");
+                    	win = true;
+                    }
+				} catch (InputMismatchException e) {
+					System.out.println("Invalid input. Please enter an integer.");
+					scan_obj.next();
+				}
             }
             
+        	System.out.println("Congratulations! You win the game.");
         	System.out.println("You took " + attempt + " attempts to guess the number");
         	
         	System.out.println("Do you want to play again(Yes or No)?");
