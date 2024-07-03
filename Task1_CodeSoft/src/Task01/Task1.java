@@ -6,133 +6,126 @@ import java.util.Random;
 
 public class Task1 {
 
-	public static void main(String[] args) {
-		Scanner scan_obj = new Scanner(System.in);
-		Random rand = new Random();
-        int max_range = 100,min_range = 1;
-        int generated_number;
-        int guessed_number;
-        boolean win = false;
-        int attempt = 0;
-        int total_attempt = 0;
+    private static final int maxRange = 100;
+    private static final int minRange = 1;
+    private static final int maxAttempts = 10;
+    static int attempts = 0;
+    
+    public static void main(String[] args) {
+        Scanner scanObj = new Scanner(System.in);
+        Random rand = new Random();
+        
         boolean play_again = true;
-        String level = "easy";
+        int total_attempts = 0;
         int round = 0;
-        
-        
+
         System.out.println("Welcome to the Number Guessing Game!");
-        System.out.println("Generated numbers are within " + min_range + " to " + max_range);
-        
-        
+        System.out.println("Generated numbers are within " + minRange + " to " + maxRange);
+
         do {
-        	
-        	while(true) {
-        		
-        		++round;
-            	//Adding levels of game
-                System.out.print("Choose type of level - (Easy or Hard): ");
-                level = scan_obj.nextLine();
+            round++;
+            attempts = 0;
+            String level = getLevelChoice(scanObj);
             
-                //Generated Random Number
-                generated_number = rand.nextInt(max_range - min_range + 1) + min_range;
-                //System.out.println("\nYour generated number : "+generated_number);
-                
-                
-                if (level.equalsIgnoreCase("Easy")) {
-                	//Playing easy level
-                	System.out.println("You choosed easy level. You have unlimited chances to play.");
-            
-                	while(!win) {
-                    	System.out.println("\n\nThis is your attempt "+ ++attempt + " of round " + round + " : ");
-                        
-                    	try {
-                    		//Getting user input to guess for the generated number
-                            System.out.print("Enter a number to guess for the generated number: ");
-                            guessed_number = scan_obj.nextInt();
-                            //System.out.println(guessed_number);
-                    		
-                            if (guessed_number < generated_number) {
-                            	System.out.println("Guessed number " + guessed_number + " is too low.");
-                            }
-                            else if (guessed_number > generated_number) {
-                            	System.out.println("Guessed number " + guessed_number + " is too high.");
-                            } 
-                            else {
-                            	System.out.println("Guessed number " + guessed_number + " is correct.");
-                            	win = true;
-                            	
-                            	System.out.println("Congratulations! You win the game.");
-                            	System.out.println("You took " + attempt + " attempts to guess the number");
-                            	
-                            }
-        				} catch (InputMismatchException e) {
-        					System.out.println("Invalid input. Please enter an integer.");
-        					scan_obj.next();
-        				}
-                    }
-                    
-                	
-                	break;
-                }
-                else if (level.equalsIgnoreCase("Hard")) {
-                	//Playing Hard Level
-                	System.out.println("You choosed hard level. You have just 10 attempts to play.");
-                	
-                	while(!win) {
-                    	
-                		++attempt;
-                		
-                        if (attempt<10) {
-                        	System.out.println("\n\nThis is your attempt "+ attempt + " of round " + round + " : ");
-                        }
-                        else if (attempt==10) {
-                    		System.out.println("\n\nThis is last attempt " + attempt + " of round " + round + ".");
-                    	}else if(attempt>10) {
-                    		System.out.println("\n\nYou attempted all 10 chances. You lossed!");
-                    		break;
-                    	}
-                    	
-                    	try {
-                    		//Getting user input to guess for the generated number
-                            System.out.print("Enter a number to guess for the generated number: ");
-                            guessed_number = scan_obj.nextInt();
-                            //System.out.println(guessed_number);
-                    		
-                            if (guessed_number < generated_number) {
-                            	System.out.println("Guessed number " + guessed_number + " is too low.");
-                            }
-                            else if (guessed_number > generated_number) {
-                            	System.out.println("Guessed number " + guessed_number + " is too high.");
-                            } 
-                            else {
-                            	System.out.println("Guessed number " + guessed_number + " is correct.");
-                            	win = true;
-                            	
-                            	System.out.println("Congratulations! You win the game.");
-                            	System.out.println("You took " + attempt + " attempts to guess the number");
-                            }
-        				} catch (InputMismatchException e) {
-        					System.out.println("Invalid input. Please enter an integer.");
-        					scan_obj.next();
-        				}
-                    }
-                    
-                	break;
-                }
-                else {
-                	System.out.println("Invalid input. Please enter 'Easy' or 'Hard'.");
-                }
-                
+            boolean win = false;
+
+            if (level.equalsIgnoreCase("Easy")) {
+                attempts = playEasyLevel(rand, scanObj, attempts, win, round);
+            } else if (level.equalsIgnoreCase("Hard")) {
+                attempts = playHardLevel(rand, scanObj, attempts, win, round);
             }
 
-        	System.out.println("\nDo you want to play again(Yes or No)?");
-        	play_again = scan_obj.next().equalsIgnoreCase("Yes");
-        	win = false;
-        	total_attempt += attempt;
-        	attempt = 0;
-        }while (play_again);
-        
-        System.out.println("You have played " + round + " round with total " + total_attempt + " attempts.");
-        System.out.println("Thanks to play game!");
-	}
+            total_attempts += attempts;
+
+            System.out.println("\nDo you want to play again (Yes or No)?");
+            play_again = scanObj.next().equalsIgnoreCase("Yes");
+        } while (play_again);
+
+        System.out.println("You have played " + round + " rounds with a total of " + total_attempts + " attempts.");
+        System.out.println("Thanks for playing the game!");
+    }
+
+    //Method to get level choice
+    private static String getLevelChoice(Scanner scanObj) {
+        while (true) {
+            System.out.print("Choose a level (Easy or Hard): ");
+            String level = scanObj.nextLine();
+            if (level.equalsIgnoreCase("Easy") || level.equalsIgnoreCase("Hard")) {
+                return level;
+            } 
+            else {
+                System.out.println("Invalid input. Please enter 'Easy' or 'Hard'.");
+            }
+        }
+    }
+
+    
+    //Method to play Easy level
+    private static int playEasyLevel(Random rand, Scanner scanObj, int attempts, boolean win, int round) {
+        int generatedNumber = rand.nextInt(maxRange - minRange + 1) + minRange;
+        System.out.println("You chose the easy level. You have unlimited chances to play.");
+
+        while (!win) {
+            attempts++;
+            System.out.println("\n\nThis is your attempt " + attempts + " of round " + round + " : ");
+
+            try {
+                System.out.print("Enter a number to guess for the generated number: ");
+                int guessedNumber = scanObj.nextInt();
+                scanObj.nextLine(); // Consume newline character
+
+                if (guessedNumber < generatedNumber) {
+                    System.out.println("Guessed number " + guessedNumber + " is too low.");
+                } else if (guessedNumber > generatedNumber) {
+                    System.out.println("Guessed number " + guessedNumber+ " is too high.");
+                } else {
+                    System.out.println("Guessed number " + guessedNumber + " is correct.");
+                    win = true;
+                    System.out.println("Congratulations! You win the game.");
+                    System.out.println("You took " + attempts + " attempts to guess the number");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter an integer.");
+                scanObj.next(); // Consume invalid input
+            }
+        }
+        return attempts;
+    }
+
+    //Method to play Hard level
+    private static int playHardLevel(Random rand, Scanner scanObj, int attempts, boolean win, int round) {
+        int generatedNumber = rand.nextInt(maxRange - minRange + 1) + minRange;
+        System.out.println("You chose the hard level. You have " + maxAttempts + " attempts to play.");
+
+        while (!win && attempts < maxAttempts) {
+            attempts++;
+            System.out.println("\n\nThis is your attempt " + attempts + " of round " + round + " : ");
+
+            try {
+                System.out.print("Enter a number to guess for the generated number: ");
+                int guessedNumber = scanObj.nextInt();
+                scanObj.nextLine(); // Consume newline character
+
+                if (guessedNumber < generatedNumber) {
+                    System.out.println("Guessed number " + guessedNumber + " is too low.");
+                } else if (guessedNumber > generatedNumber) {
+                    System.out.println("Guessed number " + guessedNumber + " is too high.");
+                } else {
+                    System.out.println("Guessed number " + guessedNumber + " is correct.");
+                    win = true;
+                    System.out.println("Congratulations! You win the game.");
+                    System.out.println("You took " + attempts + " attempts to guess the number");
+                    break; // Exit the loop after winning
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter an integer.");
+                scanObj.next(); // Consume invalid input
+            }
+        }
+
+        if (!win) {
+            System.out.println("You attempted all " + maxAttempts + " chances. You lost!");
+        }
+        return attempts;
+    }
 }
