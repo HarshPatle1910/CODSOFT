@@ -10,31 +10,67 @@ average percentage.
 
 package Task02;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Task2 {
 
 	public static void main(String[] args) {
 		
-		Scanner scan_obj = new Scanner(System.in);
-		
-		//Getting number of Subjects
-		System.out.print("Enter number of Subjects: ");
-		int number_of_subjects = scan_obj.nextInt();
+		Scanner scanObj = new Scanner(System.in);
 		
 		int total_marks = 0;
-		int []marks = new int[number_of_subjects];
+		int mrk = 0;
+		double avg_percentage=0.0;
+		int number_of_subjects=0;
+		boolean valuesOK = false;
 		
-		//Getting and calculating total Marks of subjects
-		for(int i=0;i<number_of_subjects;i++) {
-			System.out.print("Enter marks of Subject " + (i+1) + " (out of 100): ");
-			marks[i] = scan_obj.nextInt();
-			total_marks += marks[i];
+		while(!valuesOK) {
+			try {
+				//Getting number of Subjects
+				System.out.print("Enter number of subjects: ");
+				number_of_subjects = scanObj.nextInt();
+				while(number_of_subjects<1) {
+					System.out.println("Number of subjects must be one or more than one...");
+					System.out.print("Enter number of subjects: ");
+					number_of_subjects = scanObj.nextInt();
+				}
+				
+				int []marks = new int[number_of_subjects];
+				
+				//Getting and calculating total Marks of subjects
+				for(int i=0;i<number_of_subjects;i++) {
+					System.out.print("Enter marks of Subject " + (i+1) + " (out of 100): ");
+					mrk = scanObj.nextInt();
+					
+					if (mrk>100) {
+						System.out.println("Please enter valid marks. Marks must be less than or equal to 100");
+						i--;
+					}else if (mrk<0){
+						System.out.println("Please enter valid marks. Marks must be Positive.");
+						i--;
+					}else{
+						marks[i]=mrk;
+						total_marks += marks[i];
+					}
+				}
+				
+				
+				try {
+					//Calculating Average Percentage
+					avg_percentage = (double)total_marks/number_of_subjects;
+				} catch (ArithmeticException e) {
+					System.out.print("Number of subjects must greater than zero.");
+				}
+				
+				valuesOK = true;
+					
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid input. Please enter a numerical value.\n");
+	            scanObj.next(); // Consume invalid input
+			}	
 		}
-		
-		//Calculating Average Percentage
-		float avg_percentage = total_marks/number_of_subjects;
-		
+				
 		//Calculating grades
 		String grade;
 		if (avg_percentage>90) {
@@ -56,7 +92,7 @@ public class Task2 {
 		System.out.println("Average Percentage: " + avg_percentage);
 		System.out.println("Grade: " + grade);
 		
-		scan_obj.close();
+		scanObj.close();
 	}
 
 }
