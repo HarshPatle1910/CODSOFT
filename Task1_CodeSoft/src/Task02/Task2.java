@@ -33,6 +33,7 @@ public class Task2 {
         double averagePercentage = (double) totalMarks / numberOfSubjects;
         String grade = getGrade(averagePercentage);
 
+        System.out.println("\n\nResult: \n");
         System.out.println("Total Marks: " + totalMarks);
         System.out.println("Average Percentage: " + averagePercentage);
         System.out.println("Grade: " + grade);
