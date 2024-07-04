@@ -15,84 +15,83 @@ import java.util.Scanner;
 
 public class Task2 {
 
-	public static void main(String[] args) {
-		
-		Scanner scanObj = new Scanner(System.in);
-		
-		int total_marks = 0;
-		int mrk = 0;
-		double avg_percentage=0.0;
-		int number_of_subjects=0;
-		boolean valuesOK = false;
-		
-		while(!valuesOK) {
-			try {
-				//Getting number of Subjects
-				System.out.print("Enter number of subjects: ");
-				number_of_subjects = scanObj.nextInt();
-				while(number_of_subjects<1) {
-					System.out.println("Number of subjects must be one or more than one...");
-					System.out.print("Enter number of subjects: ");
-					number_of_subjects = scanObj.nextInt();
-				}
-				
-				int []marks = new int[number_of_subjects];
-				
-				//Getting and calculating total Marks of subjects
-				for(int i=0;i<number_of_subjects;i++) {
-					System.out.print("Enter marks of Subject " + (i+1) + " (out of 100): ");
-					mrk = scanObj.nextInt();
-					
-					if (mrk>100) {
-						System.out.println("Please enter valid marks. Marks must be less than or equal to 100");
-						i--;
-					}else if (mrk<0){
-						System.out.println("Please enter valid marks. Marks must be Positive.");
-						i--;
-					}else{
-						marks[i]=mrk;
-						total_marks += marks[i];
-					}
-				}
-				
-				
-				try {
-					//Calculating Average Percentage
-					avg_percentage = (double)total_marks/number_of_subjects;
-				} catch (ArithmeticException e) {
-					System.out.print("Number of subjects must greater than zero.");
-				}
-				
-				valuesOK = true;
-					
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid input. Please enter a numerical value.\n");
-	            scanObj.next(); // Consume invalid input
-			}	
-		}
-				
-		//Calculating grades
-		String grade;
-		if (avg_percentage>90) {
-			grade = "A+";
-		} else if (avg_percentage>80) {
-			grade = "A";
-		} else if (avg_percentage>65) {
-			grade = "B";
-		} else if (avg_percentage>50) {
-			grade = "C";
-		} else if (avg_percentage>45) {
-			grade = "D";
-		} else {
-			grade = "F";
-		}
-		
-		//Showing the total marks, average percentage, and grade
-		System.out.println("Total Marks: " + total_marks);
-		System.out.println("Average Percentage: " + avg_percentage);
-		System.out.println("Grade: " + grade);
-		
-		scanObj.close();
-	}
+    public static void main(String[] args) {
+    	
+    	System.out.println("\t\t\tSTUDENT GRADE CALCULATOR\r\n ");
+    	
+        Scanner scanner = new Scanner(System.in);
 
+        int numberOfSubjects = getValidNumberOfSubjects(scanner);
+        double[] marks = new double[numberOfSubjects];
+        double totalMarks = 0;
+
+        for (int i = 0; i < numberOfSubjects; i++) {
+            marks[i] = getValidMark(scanner, i + 1);
+            totalMarks += marks[i];
+        }
+
+        double averagePercentage = (double) totalMarks / numberOfSubjects;
+        String grade = getGrade(averagePercentage);
+
+        System.out.println("Total Marks: " + totalMarks);
+        System.out.println("Average Percentage: " + averagePercentage);
+        System.out.println("Grade: " + grade);
+
+        scanner.close();
+    }
+
+    //Getting number of subjects
+    private static int getValidNumberOfSubjects(Scanner scanner) {
+        while (true) {
+            try {
+                System.out.print("Enter number of subjects: ");
+                int numberOfSubjects = scanner.nextInt();
+                if (numberOfSubjects < 1) {
+                    System.out.println("Number of subjects must be one or more than one...");
+                } else {
+                    return numberOfSubjects;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a numerical value.\n");
+                scanner.next(); // Consume invalid input
+            }
+        }
+    }
+
+    //Method to get valid marks
+    private static double getValidMark(Scanner scanner, int subjectNumber) {
+        while (true) {
+            try {
+                System.out.print("Enter marks of Subject " + subjectNumber + " (out of 100): ");
+                double mark = scanner.nextDouble();
+                if (mark < 0) {
+                    System.out.println("Please enter valid marks. Marks must be Positive.");
+                } else if (mark > 100) {
+                    System.out.println("Please enter valid marks. Marks must be less than or equal to 100");
+                } else {
+                    return mark;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a numerical value.\n");
+                scanner.next(); // Consume invalid input
+            }
+        }
+    }
+
+    //Method for finding grade
+    private static String getGrade(double averagePercentage) {
+        if (averagePercentage > 90) {
+            return "A+";
+        } else if (averagePercentage > 80) {
+            return "A";
+        } else if (averagePercentage > 65) {
+            return "B";
+        } else if (averagePercentage > 50) {
+            return "C";
+        } else if (averagePercentage > 45) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
 }
